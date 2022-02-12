@@ -51,20 +51,35 @@ def rainbowCycle(strip, wait_ms=20, iterations=5):
         time.sleep(wait_ms/1000.0)
 
 def pianoChangeColorRainbow(strip, j):
+  global inport
+  offcount = 0
+  inport=mido.open_input('Clavinova:Clavinova MIDI 1 20:0')
   while True:
+    offcount += 1
+    print(offcount)
     for msg in inport.iter_pending():
+      print(offcount)
       if msg.type == "note_on":
+        print(offcount)
         strip.setPixelColor(round((msg.note - 17) * 2.0), wheel((int(round((msg.note - 17)) * 256 / 88 + j) & 255)))
         strip.setPixelColor(round((msg.note - 17) * 2.0) -1, wheel((int(round((msg.note - 17)) * 256 / 88 + j) & 255)))
         strip.setPixelColor(round((msg.note - 17) * 2.0) +1, wheel((int(round((msg.note - 17)) * 256 / 88 + j) & 255)))
         j += 1
       if msg.type == "note_off":
+        print(offcount)
         strip.setPixelColor(round((msg.note - 17) * 2.0), Color(0,0,0))
         strip.setPixelColor(round((msg.note - 17) * 2.0) -1, Color(0,0,0))
         strip.setPixelColor(round((msg.note - 17) * 2.0) +1, Color(0,0,0))
       strip.show()
       if j > 1279:
         j = 0
+    if offcount > 400:
+      offcount = 0
+      inport.close()
+      if inport.closed:
+        print("Yup, it's closed.")
+      inport=mido.open_input('Clavinova:Clavinova MIDI 1 20:0')
+    print(offcount)
     time.sleep(0.01)
 
 
@@ -141,7 +156,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clear', action='store_true', help='clear the display on exit')
     args = parser.parse_args()
-    inport=mido.open_input('Clavinova:Clavinova MIDI 1 20:0')
+#    inport=mido.open_input('Clavinova:Clavinova MIDI 1 20:0')
 
     # Create NeoPixel object with appropriate configuration.
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
@@ -152,14 +167,18 @@ if __name__ == '__main__':
     if not args.clear:
         print('Use "-c" argument to clear LEDs on exit')
     
-    try:
-      while True:
+    while True:
+      try:
 #        pianoSingleColor(strip, Color(10, 30, 230))
 #        pianoChangeColorEachNote(strip)
 #        pianoColorRainbow(strip)
 #        pianoChangeColorRainbowAllSame(strip, 0)
         pianoChangeColorRainbow(strip, 0)
 
-    except KeyboardInterrupt:
-        if args.clear:
-            colorWipe(strip, Color(0,0,0), 1)
+      except KeyboardInterrupt:
+          if args.clear:
+              colorWipe(strip, Color(0,0,0), 1)
+      except IOError:
+          colorWipe(strip, Color(0,0,0), 1)
+          time.sleep(2)
+          pass
