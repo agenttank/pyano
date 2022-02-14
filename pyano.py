@@ -174,6 +174,7 @@ if __name__ == '__main__':
       except KeyboardInterrupt:
           if args.clear:
             colorWipe(strip, Color(0,0,0), 1)
+          exit()
       except OSError:
           colorWipe(strip, Color(0,0,0), 1)
           time.sleep(1)
