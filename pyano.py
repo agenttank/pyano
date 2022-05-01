@@ -74,6 +74,7 @@ def pianoChangeColorRainbow(strip, j):
         j = 0
     timeout -= 1
     if timeout == 0:
+      inport.close()
       sys.stdout.flush()
       os.execv(sys.argv[0], sys.argv)
     time.sleep(0.01)
@@ -177,11 +178,11 @@ if __name__ == '__main__':
           exit()
       except OSError:
           colorWipe(strip, Color(0,0,0), 1)
-          time.sleep(1)
+          time.sleep(5)
           sys.stdout.flush()
           os.execv(sys.argv[0], sys.argv)
       except IOError:
           colorWipe(strip, Color(0,0,0), 1)
-          time.sleep(1)
+          time.sleep(5)
           sys.stdout.flush()
           os.execv(sys.argv[0], sys.argv)
