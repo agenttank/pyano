@@ -157,6 +157,7 @@ if __name__ == '__main__':
     # Create NeoPixel object with appropriate configuration.
     strip = Adafruit_NeoPixel(LED_COUNT, LED_PIN, LED_FREQ_HZ, LED_DMA, LED_INVERT, LED_BRIGHTNESS, LED_CHANNEL)
     # Intialize the library (must be called once before other functions).
+    time.sleep(2.00)
     strip.begin()
 
     print ('Press Ctrl-C to quit.')
@@ -186,3 +187,5 @@ if __name__ == '__main__':
           time.sleep(5)
           sys.stdout.flush()
           os.execv(sys.argv[0], sys.argv)
+      except Exception as e:
+          os.system('reboot')
