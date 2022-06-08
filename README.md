@@ -1,4 +1,4 @@
-*** pyano
+# pyano #
 
 press key on midi keyboard, makes led strip colorful
 
