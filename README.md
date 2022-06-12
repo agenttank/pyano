@@ -6,8 +6,9 @@ I am pretty sure the script needs some adjustments by you (name of midi device, 
 
 The script stops because of an error from time to time.
 
-I use this in crontab for now. It re-runs the script when it detects that it does not run.
+I use this in crontab for now. It re-runs the script at every boot and reboots when it detects that it does not run.
 
 ```
-* * * * * ps aux | grep pyano | grep -v grep || /home/pi/pyano/pyano.py >/dev/null 2>&1
+@reboot /home/pi/pyano/pyano.py >/tmp/pyano 2>&1
+* * * * * ps x | grep pyano | grep -v grep || /usr/sbin/reboo
 ```
